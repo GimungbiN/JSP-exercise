@@ -10,22 +10,78 @@
     
     
     <%
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    %>
     
-    <%
+    //한페이지에 보여줄 글 목록 수 지정
+    int pageSize = 3;
+    
+    
+    
+    
+    
+    //날짜 형식 지정 
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    
+    
+    
+    String pageNum = request.getParameter("pageNum");
+    
+    String searchWhat = request.getParameter("searchWhat");
+    //무엇을 검색할지 파라미터 가져와야 함(작성자, 제목, 내용)
+    String searchText = request.getParameter("searchText");
+    //검색 내용
+    
+    //파라미터 가져와서 한글로 변환
+    
+    if(searchText!=null){
+    	searchText = new String(searchText.getBytes("utf-8"),"utf-8");
+    }
+    
+    
+    if(pageNum == null){
+    	pageNum = "1";
+    	
+    }
+    int currentPage = Integer.parseInt(pageNum);
+    
+    
+    
+    
+    
+    
+    int startRow = (currentPage-1) * pageSize + 1;
+    int endRow = currentPage * pageSize;
+    		
+    
+    
+   
     int count = 0;
     int number = 0;
     List<BoardVO> articleList = null;
     BoardDAO dbPro = BoardDAO.getInstance();
     
-    count = dbPro.getArticleCount();
+    //검색이 아니면 전체 목록을 보여주고, 검색이면 검색한 내용만 보여줌
     
-    if(count > 0){
-    	articleList = dbPro.getArticles();
+    if(searchText == null){//검색이 아닌경우
+    	//전체 글수를 의미함
+        count = dbPro.getArticleCount();
+        if(count > 0){
+        	//하나라도 존재하면 리스트를 출력하세요.
+        	articleList = dbPro.getArticles(startRow,endRow);
+        }
+    }else{//검색일 경우
+    	count = dbPro.getArticleCount(searchWhat,searchText);
+        if(count > 0){
+        	//하나라도 존재하면 리스트를 출력하세요.
+        	articleList = dbPro.getArticles(searchWhat,searchText,startRow,endRow);
+        }
+    	
     }
     
-    number = count;
+    
+    //전체 글의 수가 하나라도 존재하면 
+    
+    
+    number = count-(currentPage-1)*pageSize;
     
     
     %>
@@ -36,6 +92,18 @@
 <meta charset="UTF-8">
 <title>게시판</title>
 <link rel="stylesheet" type="text/css" href="style.css">
+
+ <script type="text/javascript">
+function listSave(){
+	if(document.search.searchText.value==""){
+		alert("검색어를 넣어주세요.");
+		document.search.searchText.focus();
+		return false;
+	}
+}
+
+</script> 
+<script type="text/javascript" src="script.js"></script>
 </head>
 <body bgcolor="<%=bodyback_c%>">
 
@@ -83,7 +151,7 @@
 <%
 
 
-for(int i = 0; i<articleList.size();i++){
+for(int i = 0; i < articleList.size(); i++){
 	BoardVO article = (BoardVO)articleList.get(i);
 
 
@@ -91,10 +159,25 @@ for(int i = 0; i<articleList.size();i++){
 <tr height="30">
 <td align="center" width="50"><%=number-- %>
 <td width="250">
-<a href="content.jsp?num=<%=article.getNum()%>&pageNum=1">
+
+<%
+int wid=0;
+
+if( article.getDepth()>0 ){
+	wid = 5 * (article.getDepth());%>
+
+
+<img src="img/level.gif" width="<%=wid %>" height="16">
+<img src="img/re.gif">
+<%}else{ %>
+<img src="img/level.gif" width="<%=wid %>" height="16">
+<%} %>
+<a href="content.jsp?num=<%=article.getNum()%>&pageNum=<%=currentPage %>">
+
+
 <%=article.getSubject() %></a>
 <%if(article.getReadcount()>=20){ %>
-<img src="img/hot.gif" border="0" height="16">
+<img src="img/icons8-18-플러스-100.png" border="0" height="20">
 <%} %>
 </td>
 <td  align="center" width="100">
@@ -121,6 +204,71 @@ for(int i = 0; i<articleList.size();i++){
 </table>
 
 <%}//end else %>
+
+
+<%
+//페이지 블록
+if(count>0){
+	
+	int pageBlock = 2;
+
+    int imsi = count % pageSize == 0?0:1;
+
+    int pageCount = count/pageSize + imsi;
+    
+    //시작 페이지
+    int startPage = (int)((currentPage-1)/pageBlock)*pageBlock+1;
+    
+    //마지막 페이지
+    int endPage = startPage + pageBlock -1;
+    
+    //마지막으로 보여줄 페이지
+    if(endPage > pageCount) 
+    	endPage=pageCount;
+    
+    
+    //페이지 블럭을 이전 과 다음 처리 작업
+    
+    if(startPage > pageBlock){
+    	%>  	
+  <a href="list.jsp?pageNum=<%=startPage-pageBlock%>">[이전]</a>
+    
+    <%
+    }
+    for(int i = startPage;i<=endPage;i++){
+    
+    
+    %>
+     
+    <a href="list.jsp?pageNum=<%=i %>">[<%=i %>]</a>
+    <%} 
+  
+  if(endPage<pageCount){
+	  
+  
+  %>
+  
+   <a href="list.jsp?pageNum=<%=startPage+pageBlock%>">[다음]</a>
+
+<%
+        }
+    }
+    
+    %>
+<!-- 검색창 -->
+<form action="list.jsp">
+<select name="searchWhat">
+<option value="writer">작성자</option>
+<option value="subject">제목</option>
+<option value="content">내용</option>
+
+</select>
+<input type="text" name="searchText">
+<input type="submit" value="검색">
+
+
+
+</form>
 </div>
 </body>
 </html>

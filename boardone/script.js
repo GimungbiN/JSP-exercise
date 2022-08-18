@@ -1,9 +1,10 @@
 function writeSave(){
-	if(document.writeForm.writer.value==""){
+	
+	if(document.write.writer.value==""){
 		alert("작성자를 입력하십시오....");
 	
 	
-document.writeForm.writer.focus();
+document.write.writer.focus();
 return false;	
 }
 if(document.writeForm.email.value==""){
@@ -36,3 +37,11 @@ return false;
 }
 
 }
+function listSave(){
+	if(document.search.searchText.value==""){
+		alert("비밀번호를 넣어야지 ~~~~~");
+		document.search.searchText.focus();
+		return false;
+	}
+}
+
