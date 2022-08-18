@@ -1,0 +1,60 @@
+@charset "UTF-8";
+
+BODY {
+	FONT-SIZE:9pt;
+	COLOR:black;
+	LINE-HEIGHT:160%;
+	
+}
+TD {
+	FONT-SIZE:9pt;
+	COLOR:black;
+	LINE-HEIGHT:160%;
+	
+}
+
+DIV {
+	FONT-SIZE:9pt;
+	COLOR:black;
+	LINE-HEIGHT:160%;
+	
+}
+
+FORM {
+	FONT-SIZE:9pt;
+	COLOR:black;
+	LINE-HEIGHT:160%;
+	
+}
+
+TEXTAREA{
+	BORDER-RIGHT:1px solid #999999;
+	border-top: 1px solid #999999;
+	border-left: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	font-size: 9pt;
+	color: black;
+	background-color:white;
+		
+}
+
+input{
+	BORDER-RIGHT:1px solid #999999;
+	border-top: 1px solid #999999;
+	border-left: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	font-size: 9pt;
+	color: black;
+	background-color:white;
+		
+}
+
+A:link {
+	text-decoration: none;color: #696969;
+}
+A:hover {
+	text-decoration: yes;color: #66CCFF;
+}
+A:visited {
+	text-decoration: none;color: #330066;
+}
