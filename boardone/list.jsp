@@ -230,31 +230,50 @@ if(count>0){
     //페이지 블럭을 이전 과 다음 처리 작업
     
     if(startPage > pageBlock){
+    	//검색일 경우와 아닐 경우 페이지 처리
+    	 if(searchText == null){
     	%>  	
   <a href="list.jsp?pageNum=<%=startPage-pageBlock%>">[이전]</a>
-    
+    <%}else{ %>
+    	<a href="list.jsp?pageNum=<%=startPage-pageBlock%>&searchWhat=<%=searchWhat %>&searchText=<%=searchText%>">[이전]</a>
+   
     <%
+           }
     }
     for(int i = startPage;i<=endPage;i++){
+    	if(searchText == null){
+    		
+    	
     
     
     %>
      
     <a href="list.jsp?pageNum=<%=i %>">[<%=i %>]</a>
-    <%} 
-  
-  if(endPage<pageCount){
-	  
+    
+    <%}else { %>
+    <a href="list.jsp?pageNum=<%=i %>&searchWhat=<%=searchWhat %>&searchText=<%=searchText%>">[<%=i %>]</a>
+    
+    
+  <%}
+    	}
+ 
+    
+    if(endPage<pageCount){
+	  if(searchText == null){
   
   %>
+  <a href="list.jsp?pageNum=<%=startPage+pageBlock%>">[다음]</a>
   
-   <a href="list.jsp?pageNum=<%=startPage+pageBlock%>">[다음]</a>
+  <%}else{ %>
+   <a href="list.jsp?pageNum=<%=startPage+pageBlock%>&searchWhat=<%=searchWhat %>&searchText=<%=searchText%>">[다음]</a>
 
 <%
         }
     }
-    
+} 
     %>
+
+
 <!-- 검색창 -->
 <form action="list.jsp">
 <select name="searchWhat">
